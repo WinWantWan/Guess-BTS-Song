@@ -1,6 +1,7 @@
 {
-    "buildCommand": "npm i --no-optional && npm run build",
+    "version": 2,
+    "framework": "vite",
+    "buildCommand": "npm install --no-optional && npm run build",
     "outputDirectory": "dist",
-    "devCommand": "npm run dev",
-    "installCommand": "npm i --no-optional"
+    "nodeVersion": "18"
   }
