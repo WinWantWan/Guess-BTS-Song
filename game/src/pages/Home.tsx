@@ -187,7 +187,12 @@ const Home = () => {
           Start Game
         </button>
 
-        <p className="mt-4 text-gray-600">{songs.length} BTS songs available to guess</p>
+        <p className="mt-4 text-gray-600">
+          {songs.length} BTS songs available to guess
+          {songs.length >= 25 && (
+            <span className="ml-1 text-purple-600 font-medium">- Perfect for a challenging game!</span>
+          )}
+        </p>
       </motion.div>
     </div>
   )

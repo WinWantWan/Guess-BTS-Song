@@ -10,6 +10,7 @@ import ScoreDisplay from "../components/ScoreDisplay"
 import DifficultySelector from "../components/DifficultySelector"
 import { Loader, Headphones } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
+import { getRandomUnusedSong } from "../services/musicApi"
 
 const Game = () => {
   const { songs, isLoading } = useMusic()
@@ -48,22 +49,33 @@ const Game = () => {
     setIsRevealed(false)
     setIsPlaying(false)
 
-    // Get a random song for this round
-    const availableSongs = [...songs]
-    const randomIndex = Math.floor(Math.random() * availableSongs.length)
-    const selected = availableSongs[randomIndex]
+    // Get a random song that hasn't been used in this session
+    const selected = getRandomUnusedSong(songs)
+
+    if (!selected) {
+      console.error("No songs available")
+      return
+    }
+
     setCurrentSong(selected)
 
-    // Remove the selected song from options
-    availableSongs.splice(randomIndex, 1)
+    // Create a copy of songs without the current song
+    const availableSongs = songs.filter((song) => song.id !== selected.id)
 
-    // Get 3 random wrong options
+    // Determine how many wrong options we can show
+    const maxWrongOptions = Math.min(3, availableSongs.length)
+
+    // Get random wrong options
     const wrongOptions: string[] = []
-    for (let i = 0; i < 3; i++) {
-      if (availableSongs.length > 0) {
-        const wrongIndex = Math.floor(Math.random() * availableSongs.length)
-        wrongOptions.push(availableSongs[wrongIndex].title)
-        availableSongs.splice(wrongIndex, 1)
+    const usedIndices = new Set<number>()
+
+    while (wrongOptions.length < maxWrongOptions) {
+      const randomIndex = Math.floor(Math.random() * availableSongs.length)
+
+      // Ensure we don't use the same wrong option twice
+      if (!usedIndices.has(randomIndex)) {
+        usedIndices.add(randomIndex)
+        wrongOptions.push(availableSongs[randomIndex].title)
       }
     }
 

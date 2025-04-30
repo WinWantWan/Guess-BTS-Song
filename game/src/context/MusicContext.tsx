@@ -23,7 +23,19 @@ export const MusicProvider = ({ children }: { children: ReactNode }) => {
       setIsLoading(true)
       setError(null)
       const btsSongs = await fetchBTSSongs()
-      setSongs(btsSongs)
+
+      // Filter out any duplicate songs by title (sometimes iTunes API returns duplicates)
+      const uniqueTitles = new Set<string>()
+      const uniqueSongs = btsSongs.filter((song) => {
+        if (uniqueTitles.has(song.title)) {
+          return false
+        }
+        uniqueTitles.add(song.title)
+        return true
+      })
+
+      setSongs(uniqueSongs)
+      console.log(`Loaded ${uniqueSongs.length} unique BTS songs`)
     } catch (err) {
       setError("Failed to load BTS songs. Please try again later.")
       console.error("Error loading songs:", err)
