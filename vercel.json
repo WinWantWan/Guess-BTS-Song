@@ -1,0 +1,6 @@
+{
+    "buildCommand": "npm i --no-optional && npm run build",
+    "outputDirectory": "dist",
+    "devCommand": "npm run dev",
+    "installCommand": "npm i --no-optional"
+  }
